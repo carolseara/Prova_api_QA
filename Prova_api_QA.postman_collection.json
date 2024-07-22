@@ -1,0 +1,96 @@
+{
+	"info": {
+		"_postman_id": "fcd04885-0c28-432d-8458-7bb567b4441c",
+		"name": "Prova_api_QA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2914872"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Cenário 1 - Validar Status Code\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cenário 2 - Cadastrar um usuário com sucesso\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.name).to.eql(\"Caroline\");\r",
+							"    pm.expect(jsonData.job).to.eql(\"Quality Assurance\");\r",
+							"    //convertendo o id para inteiro\r",
+							"    var userId = parseInt(jsonData.id, 10);\r",
+							"    pm.expect(userId).to.be.within(1, 999);\r",
+							"\r",
+							"    // Validacao do formato da data via regex (validacao de padronizacao de texto)\r",
+							"    var createdAt = jsonData.createdAt;\r",
+							"    var datePart = createdAt.split('T')[0]; \r",
+							"\r",
+							"    var regex = /^\\d{4}-\\d{2}-\\d{2}$/;\r",
+							"    pm.expect(datePart).to.match(regex);\r",
+							"\r",
+							"    // Obter a data atual no formato YYYY-MM-DD\r",
+							"    var currentDateString = new Date().toISOString().split('T')[0];\r",
+							"\r",
+							"    // Validar se a data corresponde à data atual\r",
+							"    pm.expect(datePart).to.eql(currentDateString);\r",
+							"      \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cenário 3 - Validar se o nome do usuário é branco ou nulo\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.name).to.not.be.oneOf([null, \"\", undefined]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cenário 4 - Validar se o job do usuário é branco ou nulo\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.job).to.not.be.oneOf([null, \"\", undefined]);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"variable_key\", \"variable_value\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Caroline\",\r\n    \"job\": \"Quality Assurance\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://reqres.in/api/users",
+					"protocol": "https",
+					"host": [
+						"reqres",
+						"in"
+					],
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
